@@ -20,14 +20,13 @@ class FarmRemoteDatasourceImpl implements FarmRemoteDatasource {
 
   @override
   Future<Either<Failure, FarmResponse>> createFarm(CreateFarmReq req) async {
+    print("farmer create");
     final response = await _client.postRequest(
       ListAPI.farmers,
       data: req.toMap(),
       converter: (response) =>
           FarmResponse.fromJson(response as Map<String, dynamic>),
     );
-
-
     return response;
   }
 }

@@ -2,18 +2,22 @@
 
 import 'package:farm_form/data/remote/crops_remote_data_source.dart';
 import 'package:farm_form/domain/use_case/farm_type_use_case.dart';
+import 'package:farm_form/domain/use_case/farm_use_case.dart';
 import 'package:get_it/get_it.dart';
 
 import '../core/api/dio_client.dart';
 import '../core/common/auth/bloc/logout/logout_bloc.dart';
 import '../core/hive/hive.dart';
 import '../data/remote/auth_remote_data_source.dart';
+import '../data/remote/farm_remote_data_source.dart';
 import '../data/remote/farm_types_remote_data_source.dart';
 import '../data/repositories/auth_repository_impl.dart';
 import '../data/repositories/crops_repository_impl.dart';
+import '../data/repositories/farm_repository.dart';
 import '../data/repositories/farm_types_repository_impl.dart';
 import '../domain/repository/auth_repository.dart';
 import '../domain/repository/crops.dart';
+import '../domain/repository/farm_repository.dart';
 import '../domain/repository/farm_types.dart';
 import '../domain/use_case/crops_use_case.dart';
 import '../domain/use_case/user_login.dart';
@@ -66,6 +70,9 @@ void _repositories() {
   sl.registerLazySingleton<FarmTypesRepository>(
         () => FarmTypesRepositoryImpl(),
   );
+  sl.registerLazySingleton<FarmRepository>(
+        () => FarmRepositoryImpl(),
+  );
 }
 
 /// Register dataSources
@@ -80,6 +87,9 @@ void _dataSources() {
   );
   sl.registerLazySingleton<FarmTypesRemoteDatasource>(
         ()=>FarmTypesRemoteDatasourceImpl(sl()),
+  );
+  sl.registerLazySingleton<FarmRemoteDatasource>(
+        ()=>FarmRemoteDatasourceImpl(sl()),
   );
 }
 
@@ -97,7 +107,9 @@ void _useCase() {
   sl.registerSingleton<GetFarmTypesUseCase>(
       GetFarmTypesUseCase()
   );
-
+  sl.registerSingleton<FarmUseCase>(
+      FarmUseCase()
+  );
 
 }
 

@@ -10,6 +10,8 @@ class CustomDropdownField<T> extends StatefulWidget {
   final String? Function(T?)? validator;
   final TextEditingController? controller;
 
+
+
   const CustomDropdownField({
     super.key,
     required this.hintText,
@@ -27,22 +29,16 @@ class CustomDropdownField<T> extends StatefulWidget {
 class _CustomDropdownFieldState<T> extends State<CustomDropdownField<T>> {
   late TextEditingController _textController;
 
+
+
   @override
   void initState() {
     super.initState();
     _textController = widget.controller ?? TextEditingController();
-    if (widget.selectedValue != null) {
-      _textController.text = widget.selectedValue.toString();
-    }
+
   }
 
-  @override
-  void didUpdateWidget(covariant CustomDropdownField<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.selectedValue != oldWidget.selectedValue) {
-      _textController.text = widget.selectedValue?.toString() ?? "";
-    }
-  }
+
 
   @override
   void dispose() {
@@ -75,7 +71,7 @@ class _CustomDropdownFieldState<T> extends State<CustomDropdownField<T>> {
       }).toList(),
       onChanged: (value) {
         widget.onChanged(value);
-        _textController.text = value?.toString() ?? "";
+
       },
       validator: widget.validator ??
               (value) {

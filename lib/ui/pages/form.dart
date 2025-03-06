@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../core/common/ui/button/basic_reactive_button.dart';
 import '../../core/hive/hive.dart';
 import '../../core/theme/app_pallete.dart';
 
@@ -41,8 +42,9 @@ class _FormScreenState extends State<FormScreen> with SingleTickerProviderStateM
   late AnimationController _controller;
   late Animation<Offset> _animation;
   late Animation<double> _rotationAnimation;
-  double _opacity = 0.0; // Initial opacity for fade-in
+  double _opacity = 0.0;
 
+  CropEntity? _selectedCrop;
   @override
   void initState() {
     super.initState();
@@ -103,7 +105,7 @@ class _FormScreenState extends State<FormScreen> with SingleTickerProviderStateM
 
         child: AnimatedOpacity(
           opacity: _opacity, // Fade-in opacity
-          duration: Duration(seconds: 1), // Duration of the fade-in effect
+          duration: const Duration(seconds: 1), // Duration of the fade-in effect
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,7 +116,7 @@ class _FormScreenState extends State<FormScreen> with SingleTickerProviderStateM
                   heading: "Enter farm details",
             
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 AuthField(
                   hintText: 'enter farm name',
                   controller: nameController,
@@ -131,60 +133,43 @@ class _FormScreenState extends State<FormScreen> with SingleTickerProviderStateM
                   hintText: 'enter location',
                   controller: locationController ,
                 ),
-            
-            
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 _Crops(cropController),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 _FarmType(farmtypeController),
-                SizedBox(height: 20.0),
-                SizedBox(
-                  width: 120,
-                  child: ElevatedButton(
-             onPressed: () {
-
-               int? storedId = MainBoxMixin().getData(MainBoxKeys.id);
-
-               if (storedId == null) {
-                 print("Error: User ID not found in Hive!");
-                 return;
-               }
-                context.read <ButtonStateCubit > ().execute(
-                usecase: FarmUseCase(),
-                params: CreateFarmReq(
-                nationalId: national_idController.text.trim(),
-                crop: cropController.text,
-                farmType: farmtypeController.text.trim(),
-                farmerName: nameController.text.trim(),
-                  createdBy: storedId.toString(),
-                  location: locationController.text.trim()
-
-                )
-                );
-                },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                const SizedBox(height: 20.0),
+                BasicReactiveButton(
+                    content: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child:Text(
+                        'Add farm',
+                        style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                          fontWeight: FontWeight.w600
+                        ),
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.add_circle_outline),
-                        SizedBox(width: 6.0,),
+                    onPressed: () {
+                      int? storedId = MainBoxMixin().getData(MainBoxKeys.id);
 
-                        Text(
-                          "save ",
+                      if (storedId == null) {
+                        print("Error: User ID not found in Hive!");
+                        return;
+                      }
+                      context.read <ButtonStateCubit > ().execute(
+                          usecase: FarmUseCase(),
+                          params: CreateFarmReq(
+                              nationalId: national_idController.text.trim(),
+                              crop: int.parse(cropController.text),
+                              farmType: int.parse(farmtypeController.text.trim()),
+                              farmerName: nameController.text.trim(),
+                              createdBy: int.parse(storedId.toString()),
+                              location: locationController.text.trim()
 
-                          style:Theme.of(context).textTheme.labelMedium!.copyWith(
-                              color: AppPallete.whiteColor,
-                              fontWeight: FontWeight.w600
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                          )
+                      );
+                    }
+                )
+
               ],
             ),
           ),
@@ -192,37 +177,37 @@ class _FormScreenState extends State<FormScreen> with SingleTickerProviderStateM
       ),)
     );
   }
+
+  Widget _Crops(TextEditingController controller) {
+    return Container(
+      height: 56.0,
+      child: BlocBuilder<CropsDisplayCubit, CropsDisplayState>(
+        builder: (context, state) {
+          if (state is CropsLoading) {
+            return AuthFieldSkeleton(); // Fixed missing return
+          }
+          if (state is CropsLoaded) {
+            return CustomDropdownField<CropEntity>(
+              hintText: "Select Crop",
+              options: state.Crops,
+              controller: controller,
+              onChanged: (value) {
+                if (value != null) {
+                  controller.text = value.id;
+                }
+              },
+            );
+          }
+          return Container();
+        },
+      ),
+    );
+  }
 }
 
 
 
-Widget _Crops(TextEditingController controller) {
-  return Container(
-    height: 56.0,
-    child: BlocBuilder<CropsDisplayCubit, CropsDisplayState>(
-      builder: (context, state) {
-        if (state is CropsLoading) {
-          return AuthFieldSkeleton(); // Fixed missing return
-        }
-        if (state is CropsLoaded) {
-          return CustomDropdownField<CropEntity>(
-            hintText: "Select Crop",
-            options: state.Crops,
-            controller: controller,
-            onChanged: (value) {
 
-              if (value != null) {
-                controller.text = value.id;
-
-              }
-            },
-          );
-        }
-        return Container();
-      },
-    ),
-  );
-}
 
 Widget _FarmType(TextEditingController controller) {
   return Container(
@@ -234,6 +219,7 @@ Widget _FarmType(TextEditingController controller) {
         }
         if (state is FarmTypeLoaded) {
           return CustomDropdownField<FarmTypeEntity>(
+
             hintText: "Select Farm Type",
             options: state.FarmType,
             controller: controller,

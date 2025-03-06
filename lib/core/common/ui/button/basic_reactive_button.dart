@@ -1,8 +1,9 @@
-import 'package:ecommerce/common/bloc/button/button_state_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/button/button_state.dart';
+import '../../../../ui/bloc/button/button_state.dart';
+import '../../../../ui/bloc/button/button_state_cubit.dart';
+
 
 class BasicReactiveButton extends StatelessWidget {
   final VoidCallback onPressed;

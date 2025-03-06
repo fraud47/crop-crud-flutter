@@ -20,9 +20,9 @@ class CreateFarmReq {
   final String farmerName;
   final String nationalId;
   final String location;
-  final String farmType;
-  final String crop;
-  final String createdBy;
+  final int farmType;
+  final int crop;
+  final int createdBy;
 
   CreateFarmReq({
     required this.farmerName,
