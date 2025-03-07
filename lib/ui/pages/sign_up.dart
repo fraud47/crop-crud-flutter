@@ -163,7 +163,7 @@ class _SignupState extends State<Signup>  with SingleTickerProviderStateMixin  {
                       options: ["admin", "clerk"],
                       controller: roleController, // Assign controller
                       onChanged: (value) {
-                        print("Selected Role: $value");
+                        roleController.text = value!;
                       },
                     ),
                 

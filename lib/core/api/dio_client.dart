@@ -130,12 +130,12 @@ class DioClient with MainBoxMixin {
       //   nonFatalError(error: e, stackTrace: stackTrace);
       // }
       String error ='';
-      if (e.response?.data['error']!=null){
-        error=e.response?.data['error'] as String;
+      if (e.response?.data['narration']!=null){
+        error=e.response?.data['narration'] as String;
 
       }
       else{
-        error=e.response?.data['detail'] as String;
+        error=e.response?.data['narration'] as String;
       }
 
 

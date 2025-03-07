@@ -1,6 +1,8 @@
 
 
+import 'package:farm_form/data/remote/create_remote_data_source.dart';
 import 'package:farm_form/data/remote/crops_remote_data_source.dart';
+import 'package:farm_form/domain/repository/crop_upload_repository.dart';
 import 'package:farm_form/domain/use_case/farm_type_use_case.dart';
 import 'package:farm_form/domain/use_case/farm_use_case.dart';
 import 'package:get_it/get_it.dart';
@@ -12,6 +14,7 @@ import '../data/remote/auth_remote_data_source.dart';
 import '../data/remote/farm_remote_data_source.dart';
 import '../data/remote/farm_types_remote_data_source.dart';
 import '../data/repositories/auth_repository_impl.dart';
+import '../data/repositories/create_repository_impl.dart';
 import '../data/repositories/crops_repository_impl.dart';
 import '../data/repositories/farm_repository.dart';
 import '../data/repositories/farm_types_repository_impl.dart';
@@ -73,6 +76,9 @@ void _repositories() {
   sl.registerLazySingleton<FarmRepository>(
         () => FarmRepositoryImpl(),
   );
+  sl.registerLazySingleton<CreateRepository>(
+        () => CreateRepositoryImpl(),
+  );
 }
 
 /// Register dataSources
@@ -88,8 +94,12 @@ void _dataSources() {
   sl.registerLazySingleton<FarmTypesRemoteDatasource>(
         ()=>FarmTypesRemoteDatasourceImpl(sl()),
   );
+
   sl.registerLazySingleton<FarmRemoteDatasource>(
         ()=>FarmRemoteDatasourceImpl(sl()),
+  );
+  sl.registerLazySingleton<CreateRemoteDatasource>(
+        ()=>CreateRemoteDatasourceImpl(sl()),
   );
 }
 

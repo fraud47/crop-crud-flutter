@@ -22,7 +22,7 @@ class BasicAppButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         minimumSize: Size(
           width ?? MediaQuery.of(context).size.width,
-          height ?? 50
+          height ?? 56
         ),
       ),
       child: content ?? Text(

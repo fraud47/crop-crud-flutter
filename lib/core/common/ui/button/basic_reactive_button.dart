@@ -1,3 +1,4 @@
+import 'package:farm_form/core/common/toast/ContextExtensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,13 +21,23 @@ class BasicReactiveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder < ButtonStateCubit, ButtonState > (
-      builder: (context, state) {
-        if (state is ButtonLoadingState) {
-          return _loading();
-        }
-        return _initial();
-      }
+    return BlocConsumer<ButtonStateCubit, ButtonState>(
+        listener: (context, state) {
+          if (state is ButtonFailureState) {
+            context.notify("upload error",
+              isError: true,
+
+            );
+          } else if (state is ButtonSuccessState) {
+
+            context.notify('item uploaded');
+          }},
+          builder: (context, state) {
+            if (state is ButtonLoadingState) {
+
+              CircularProgressIndicator();
+            }
+            return _initial();}
     );
   }
 
@@ -48,7 +59,7 @@ class BasicReactiveButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        minimumSize: Size.fromHeight(height ?? 50),
+        minimumSize: Size.fromHeight(height ?? 56),
       ),
       child: content ?? Text(
         title,

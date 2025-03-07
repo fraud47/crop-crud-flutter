@@ -152,7 +152,7 @@ class _FormScreenState extends State<FormScreen> with SingleTickerProviderStateM
                       int? storedId = MainBoxMixin().getData(MainBoxKeys.id);
 
                       if (storedId == null) {
-                        print("Error: User ID not found in Hive!");
+
                         return;
                       }
                       context.read <ButtonStateCubit > ().execute(
